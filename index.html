@@ -80,7 +80,7 @@ const icbcPieza = (ad, grupo) => {
     recos: [188766150, null] };
   const NUM = /^-?\d+(,\d+)?$/;
   const fixRow = (name, o) => { for (const c of ['Campaign name', 'Campaign']) if (c in o) { o['Campaña original'] = o[c]; o[c] = icbcCamp(o[c]); } if (name === 'tiktok' || name === 'meta') o['Pieza corta'] = icbcPieza(o['Ad name'], o['Ad group name'] || o['Ad set name']); if (name === 'yt_creativos') o['Pieza corta'] = icbcPieza(o['TrueView Ad name'], o['Insertion order']); return o; };
-  const conv = (name, text) => { const v = d3.csvParseRows(text.replace(/\r/g, '')); if (!TABS[name][1]) { const h = v[0] || []; return v.slice(1).filter((r) => r.some((c) => c)).map((r) => Object.fromEntries(h.map((c, k) => [c, r[k] ?? '']))); } const head = v[0], cols = TABS[name][1], idx = cols.map((c) => head.indexOf(c)), out = [];
+  const conv = (name, text) => { const v = d3.csvParseRows(text.replace(/\r/g, '')); if (!TABS[name][1]) { const h = v[0] || []; return v.slice(1).filter((r) => r.some((c) => c)).map((r) => Object.fromEntries(h.map((c, k) => [c, r[k] ?? '']))); } const head = v[0] || [], cols = TABS[name][1], idx = cols.map((c) => head.indexOf(c)), out = [];
     for (let i = 1; i < v.length; i++) { const r = v[i], o = {}; cols.forEach((c, j) => { const x = idx[j] < 0 ? '' : (r[idx[j]] ?? ''); o[c] = NUM.test(x) ? parseFloat(x.replace(',', '.')) : x; });
       const imp = o.Impressions; if (typeof imp !== 'number' || imp <= 0) { if (name !== 'youtube' || !o['Video completions']) continue; } out.push(fixRow(name, o)); } return out; };
   const waitD3 = () => new Promise((res) => { const t = () => (window.d3 ? res() : setTimeout(t, 50)); t(); });
