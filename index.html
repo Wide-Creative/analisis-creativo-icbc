@@ -10,6 +10,10 @@ const icbcCamp = (name) => {
   if (!s) return 'OTROS';
   if (/^topview/.test(s)) return 'YOY_TOPVIEW';
   const t = s.split('-');
+  if (t[0] === 'ficbc') {
+    const sub = t.slice(1).map((x) => x.split('_')[0]).find((x) => x && !/^(aon|traf|trafico|clics|fbig|tkt|cpm|impr|awareness|consideration|performance|na)$/.test(x));
+    return 'FUNDACION_' + (sub || 'always-on').toUpperCase();
+  }
   if (t[0] === 'icbc' || t[0] === 'general') {
     if (t[0] === 'general') t.unshift('icbc');
     const linea = t[1] || 'otros', tipo = t[2] || '', sub = t[3] || '';
@@ -22,7 +26,7 @@ const icbcCamp = (name) => {
   if (/^que[\s_-]es[\s_-]yoy/.test(s)) return 'YOY_QUE-ES-YOY';
   if (/^primeras[\s_-]compras/.test(s)) return 'YOY_PRIMERAS-COMPRAS';
   if (/^mision/.test(s)) return 'YOY_MISIONES';
-  const OBJ = /^(alcance|interaccion|interacciones|trafico|tráfico|videoviews|video|views|altas|app|installs|branding|performance|activacion|adquisicion|evento)$/;
+  const OBJ = /^(alcance|interaccion|interacciones|trafico|tráfico|videoviews|video|views|altas|app|installs|branding|performance|activacion|adquisicion|evento|advantage)$/;
   const tk = s.split(/[\s_-]+/).filter((x) => x && !/^(aon|ao|sv|tc|dna)$/.test(x));
   const aon = /(^|[\s_-])(aon|ao)([\s_-]|$)/.test(s);
   let sub = tk.find((x) => !OBJ.test(x));
