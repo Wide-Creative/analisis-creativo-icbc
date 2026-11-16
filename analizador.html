@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Analizador de piezas · ICBC</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Fraunces:ital,opsz,wght@0,9..144,400;1,9..144,400&display=swap" rel="stylesheet">
+<style>
+:root { --fg: #1b1820; --muted: #6b6474; --bg: #f7f5f2; --panel: #fff; --line: #e6e1dc; --soft: #efebe6; --acc: #e8662a;
+--ok: #138a52; --ok-s: #e2f3ea; --warn: #b7791f; --warn-s: #faefd9; --bad: #d23b3f; --bad-s: #fbe3e3;
+--sans: "DM Sans", system-ui, sans-serif; --serif: "Fraunces", Georgia, serif; color-scheme: light; }
+@media (prefers-color-scheme: dark) { :root { --fg: #f2eee9; --muted: #a69eac; --bg: #141218; --panel: #1d1a22; --line: #2e2a34; --soft: #26222c;
+--ok: #4fd18b; --ok-s: #16301f; --warn: #f0b84a; --warn-s: #33280f; --bad: #ff6b6f; --bad-s: #3a1a1c; color-scheme: dark; } }
+* { box-sizing: border-box; } html, body { margin: 0; } [hidden] { display: none !important; }
+body { background: var(--bg); color: var(--fg); font: 14px/1.45 var(--sans); }
+.w { max-width: 1240px; margin: 0 auto; padding: 20px 16px 48px; display: grid; gap: 20px; }
+.top { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; align-items: center; }
+.back { text-decoration: none; color: inherit; font-weight: 500; padding: 8px 14px; border-radius: 999px; background: var(--soft); }
+.hero { background: #17141b; color: #f4efe9; border-radius: 18px; padding: 24px; display: grid; gap: 8px; }
+.kick { font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: #c9c0cf; display: flex; gap: 8px; align-items: center; }
+.kick::before { content: ""; width: 24px; height: 2px; background: var(--acc); }
+h1 { font: 400 clamp(2.2rem, 6vw, 4rem)/.95 var(--serif); margin: 0; letter-spacing: -.02em; } h1 em { color: var(--acc); }
+.hero p { margin: 0; max-width: 78ch; color: #d9d2dc; }
+.grid { display: grid; grid-template-columns: minmax(0, 440px) minmax(0, 1fr); gap: 20px; align-items: start; }
+@media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 18px; display: grid; gap: 14px; }
+h2 { font: 400 1.6rem/1.1 var(--serif); margin: 0; } h3 { font: 600 13px var(--sans); text-transform: uppercase; letter-spacing: .05em; color: var(--muted); margin: 0; }
+.f { display: grid; gap: 6px; } .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 520px) { .row { grid-template-columns: 1fr; } }
+label, .lb { font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
+input, select, textarea { font: inherit; color: var(--fg); background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 9px 10px; width: 100%; }
+textarea { min-height: 96px; resize: vertical; }
+.seg { display: inline-flex; flex-wrap: wrap; gap: 4px; padding: 4px; border-radius: 999px; background: var(--soft); }
+.seg button { appearance: none; border: 0; cursor: pointer; padding: 7px 13px; border-radius: 999px; background: transparent; color: var(--muted); font: 500 14px var(--sans); }
+.seg button[aria-pressed="true"] { background: var(--fg); color: var(--bg); }
+:is(button, input, select, textarea, .drop, a):focus-visible { outline: 2px solid var(--acc); outline-offset: 2px; }
+.drop { border: 1.5px dashed var(--line); border-radius: 10px; padding: 14px; text-align: center; color: var(--muted); cursor: pointer; }
+.drop.over { border-color: var(--acc); }
+.prev { display: flex; gap: 10px; align-items: center; } .prev img, .prev video { max-height: 120px; max-width: 120px; border-radius: 8px; border: 1px solid var(--line); }
+.mono { font-size: 12px; color: var(--muted); }
+.checks { display: grid; gap: 8px; }
+.ck { display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: center; padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; }
+.ck .seg button { padding: 5px 10px; font-size: 13px; }
+.go { font: 600 15px var(--sans); background: var(--acc); color: #fff; border: 0; border-radius: 10px; padding: 12px; cursor: pointer; }
+.ghost { font: 500 14px var(--sans); background: transparent; color: var(--fg); border: 1px solid var(--line); border-radius: 10px; padding: 9px 12px; cursor: pointer; }
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; }
+.t { border: 1px solid var(--line); border-radius: 10px; padding: 10px; } .t .k { font-size: 12px; color: var(--muted); } .t .v { font: 400 1.5rem/1.1 var(--serif); font-variant-numeric: tabular-nums; }
+.verdict { display: grid; grid-template-columns: auto 1fr; gap: 14px; align-items: center; padding: 14px; border-radius: 12px; }
+.v-ok { background: var(--ok-s); } .v-wa { background: var(--warn-s); } .v-no { background: var(--bad-s); }
+.big { width: 64px; height: 64px; border-radius: 50%; display: grid; place-items: center; color: #fff; font: 600 22px var(--sans); }
+.v-ok .big { background: var(--ok); } .v-wa .big { background: var(--warn); } .v-no .big { background: var(--bad); }
+.verdict b { font: 400 1.5rem/1.1 var(--serif); display: block; }
+.scale { position: relative; height: 10px; border-radius: 6px; background: linear-gradient(90deg, var(--bad) 0 40%, var(--warn) 40% 60%, var(--ok) 60% 75%, #2a6f9b 75%); }
+.scale i { position: absolute; top: -5px; height: 20px; border: 2px solid var(--fg); border-radius: 6px; }
+.sl { display: flex; justify-content: space-between; font-size: 11px; color: var(--muted); }
+table { width: 100%; border-collapse: collapse; } td, th { text-align: left; padding: 7px 6px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; font-weight: 500; }
+td.n { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; font-weight: 600; }
+.pos { color: var(--ok); } .neg { color: var(--bad); }
+ul { margin: 0; padding-left: 18px; display: grid; gap: 6px; }
+.ref { border-left: 3px solid var(--acc); padding: 6px 10px; background: var(--soft); border-radius: 0 8px 8px 0; }
+.empty { color: var(--muted); }
+footer { color: var(--muted); font-size: 13px; }
+</style>
+</head>
+<body>
+<div class="w">
+<div class="top"><a class="back" href="./">← Volver al tablero</a><span class="mono">Funciona sin cuenta: todo se calcula en tu navegador, el archivo no se sube a ningún lado.</span></div>
+<section class="hero">
+<div class="kick">ICBC · contenidos pagos · antes de pautar</div>
+<h1>Analizador de <em>piezas</em></h1>
+<p>Cargá la pieza y respondé el chequeo. El analizador la compara con lo que rindió en 2026 cada plataforma y objetivo de la cuenta (más de 1.500 piezas) y te dice qué score esperar, si conviene pautarla y qué cambiar antes.</p>
+</section>
+<div class="grid">
+<form class="panel" id="f" novalidate>
+<h2>La pieza</h2>
+<div class="f"><span class="lb">Plataforma</span><div class="seg" id="plat"></div></div>
+<div class="f"><span class="lb">Objetivo</span><div class="seg" id="obj"></div></div>
+<div class="f"><span class="lb">Archivo (opcional)</span>
+<div class="drop" id="drop" tabindex="0" role="button" aria-label="Subir imagen o video">Arrastrá o tocá para subir una imagen o un video. Leemos formato, proporción y duración.</div>
+<input type="file" id="file" accept="image/*,video/*" hidden>
+<div class="prev" id="prev"></div></div>
+<div class="row">
+<div class="f"><label for="fmt">Formato</label><select id="fmt"><option value="VIDEO">Video</option><option value="IMAGEN">Imagen</option><option value="CARRUSEL">Carrusel</option></select></div>
+<div class="f"><label for="ratio">Proporción</label><select id="ratio"><option value="9:16">9:16 vertical</option><option value="4:5">4:5 vertical</option><option value="1:1">1:1 cuadrado</option><option value="16:9">16:9 horizontal</option></select></div>
+</div>
+<div class="row">
+<div class="f"><label for="dur">Duración (seg.)</label><input id="dur" type="number" min="1" max="600" placeholder="Solo video"></div>
+<div class="f"><label for="linea">Línea</label><select id="linea"><option>Inversiones</option><option>Reposicionamiento</option><option>YOY</option><option>ICBC Mall</option><option>Sueldos</option><option>Hipotecarios</option><option>Pymes</option><option>Fundación</option><option>Amplificaciones</option><option>Otra</option></select></div>
+</div>
+<div class="f"><label for="cta">CTA del anuncio</label><select id="cta"><option value="">Sin CTA</option><option value="LEARN_MORE">Más información (LEARN_MORE)</option><option value="SHOP_NOW">Comprar (SHOP_NOW)</option><option value="SEE_DETAILS">Ver detalles (SEE_DETAILS)</option><option value="DOWNLOAD">Descargar (DOWNLOAD)</option><option value="INSTALL_MOBILE_APP">Instalar app (INSTALL_MOBILE_APP)</option><option value="WATCH_MORE">Ver más (WATCH_MORE)</option></select></div>
+<div class="f"><label for="copy">Copy</label><textarea id="copy" placeholder="Pegá el texto tal cual va a salir"></textarea><span class="mono" id="ci">0 caracteres</span></div>
+<div class="f"><span class="lb">Chequeo de la pieza</span><div class="checks" id="checks"></div></div>
+<button class="go" type="submit">Analizar pieza</button>
+<button class="ghost" type="button" id="ej">Cargar un ejemplo real (TikTok · Dólar MEP)</button>
+</form>
+<section class="panel" aria-live="polite">
+<h2 id="gt">Lo que sabemos de este objetivo</h2>
+<div class="tiles" id="tiles"></div>
+<div id="res"><p class="empty">Completá la pieza y tocá "Analizar pieza". El resultado se calcula al instante.</p></div>
+</section>
+</div>
+<footer>Estimación basada en reglas sacadas de los resultados de la cuenta (planilla Acumulado pago ICBC, ene–nov 2026). Score creativo: 50 = igual al benchmark de la cuenta; cada vez que la tasa clave se duplica suma 25. El analizador no ve el contenido visual: el chequeo de la pieza lo responde quien la carga. Sirve para decidir antes de pautar, no garantiza el resultado.</footer>
+</div>
+<script id="kb" type="application/json">{"g":[{"p":"TikTok","o":"Conversión","n":125,"tk":"CTR","bt":0.0177,"ck":"CPC","bc":81.3,"med":42,"est":20,"rev":48,"fmt":{"VIDEO":43},"vt":{"gancho_2s":0.3966,"ret_6s":0.7739,"vista_completa":0.4553,"seg_vista":6.3825},"vp":{"gancho_2s":0.1131,"ret_6s":0.3196,"vista_completa":0.0946,"seg_vista":1.7707},"lin":{"YOY":44},"nota":null,"ref":[{"n":"zFDH57Yg.mp4","s":100,"f":"VIDEO","c":""},{"n":"Reel julio","s":100,"f":"VIDEO","c":""},{"n":"Reel julio","s":100,"f":"VIDEO","c":""}]},{"p":"TikTok","o":"Alcance","n":231,"tk":"ER","bt":0.0005,"ck":"CPM","bc":462.67,"med":52,"est":17,"rev":19,"fmt":{"VIDEO":55},"vt":{"gancho_2s":0.1387,"ret_6s":0.2092,"vista_completa":0.0504,"seg_vista":1.8475},"vp":{"gancho_2s":0.0457,"ret_6s":0.1924,"vista_completa":0.0431,"seg_vista":1.0403},"lin":{"Reposicionamiento":69,"YOY":59,"Amplificaciones":54,"Inversiones":53,"Sueldos":26},"nota":null,"ref":[{"n":"acuntovaaestareldlaren6meses","s":100,"f":"VIDEO","c":"¿Cómo saber el valor del dólar a fin de mes? 🤔 Nuestros expertos no pueden adivinar el futuro, pero sí te pueden explicar cómo influye la inflación a "},{"n":"ivan redu nov","s":100,"f":"VIDEO","c":"Todos los días, mensajes y decisiones requieren tu atención. En ICBC te escuchamos."},{"n":"asesores paula nov","s":100,"f":"VIDEO","c":"Todos los días, mensajes y decisiones requieren tu atención. En ICBC te escuchamos."}]},{"p":"TikTok","o":"Engagement","n":66,"tk":"ER","bt":0.0006,"ck":"CPE","bc":993.89,"med":47.0,"est":3,"rev":33,"fmt":{"VIDEO":48},"vt":{"gancho_2s":0.1134,"ret_6s":0.2245,"vista_completa":0.054,"seg_vista":1.4072},"vp":{"gancho_2s":0.0608,"ret_6s":0.2528,"vista_completa":0.067,"seg_vista":1.2766},"lin":{"YOY":48},"nota":null,"ref":[{"n":"brandingmundial boost","s":81,"f":"VIDEO","c":"Por qué elegir una si pueden ser las dos? Usá mi promo de 30% OFF en restós, bares y fast foods mirando los partidos sea cuando sean. Guardate el vide"},{"n":"heladeria reel","s":76,"f":"VIDEO","c":"Y SIIIII!! El domingo de heladito te lo patrocino con mi 30% OFF (dale, animate a mandarle el video 😉) Aplican T&C, encontralos en la app. Link en la "},{"n":"yoy brandformance interacciones opm qr reel","s":71,"f":"VIDEO","c":"Los findes de diciembre son más disfrutables si vienen con promo 😎 Aprovechá esta datita en bares, restaurantes y fast food pagando con QR de jueves a"}]},{"p":"TikTok","o":"Tráfico","n":15,"tk":"CTR","bt":0.0566,"ck":"CPC","bc":13.17,"med":0,"est":20,"rev":80,"fmt":{"VIDEO":17},"vt":{"gancho_2s":0.6846,"ret_6s":0.8028,"vista_completa":0.2738,"seg_vista":10.0329},"vp":{"gancho_2s":0.1378,"ret_6s":0.2801,"vista_completa":0.057,"seg_vista":3.37},"lin":{"ICBC Mall":17,"Inversiones":0},"nota":"Muestra chica (15 piezas).","ref":[{"n":"winclap boost","s":88,"f":"VIDEO","c":"Si bajaste aunque sea un dedo, tenes que traer tu sueldo a mi app! Acá tratamos a tu sueldo y a vos como se merecen 😉 Cobrá en YOY y hacé vivir tu pla"},{"n":"hero","s":85,"f":"VIDEO","c":"SÍ a comprar inteligente"},{"n":"sueldos reel","s":84,"f":"VIDEO","c":"Bajate YOY, registrate y empezá a cobrar tu sueldo en mi app! "}]},{"p":"Meta","o":"Alcance","n":421,"tk":"Interacción","bt":0.0014,"ck":"CPM","bc":450.55,"med":52,"est":7,"rev":25,"fmt":{"IMAGEN":56,"VIDEO":48},"vt":{"gancho_2s":null,"ret_6s":null,"vista_completa":0.0071,"seg_vista":null},"vp":{"gancho_2s":null,"ret_6s":null,"vista_completa":0.0031,"seg_vista":null},"lin":{"Inversiones":64,"Reposicionamiento":60,"YOY":49,"Pymes":44,"Amplificaciones":39},"nota":null,"ref":[{"n":"misiones crrl","s":100,"f":"IMAGEN","c":"YOY Argentina | ¿Cuenta nueva? Tengo una misión para vos 👀\n\nDesde que te das de alta en YOY, tenés 30 días para completar 4 de estas 5 acciones:\n\n✅ Ed"},{"n":"estatico nfeed","s":100,"f":"IMAGEN","c":"Pagá con YOY y podes llevarte $5k. | Qué suma para la misión? Débito, pagar servicios, recargar transporte y celu."},{"n":"acuntovaaestareldlaren6meses","s":100,"f":"VIDEO","c":"¿Cómo saber el valor del dólar a fin de mes? 🤔 Nuestros expertos no pueden adivinar el futuro, pero sí te pueden explicar cómo influye la inflación a "}]},{"p":"Meta","o":"Tráfico","n":332,"tk":"CTR","bt":0.0187,"ck":"CPC","bc":72.74,"med":52.0,"est":7,"rev":22,"fmt":{"VIDEO":53,"IMAGEN":46},"vt":{"gancho_2s":null,"ret_6s":null,"vista_completa":0.1472,"seg_vista":null},"vp":{"gancho_2s":null,"ret_6s":null,"vista_completa":0.0142,"seg_vista":null},"lin":{"ICBC Mall":57,"Fundación":51,"Sueldos":50,"Pymes":48,"Hipotecarios":46,"Reposicionamiento":40,"Inversiones":37},"nota":null,"ref":[{"n":"azafata agosto","s":100,"f":"VIDEO","c":"Tu sueldo en ICBC es un SÍ. | Traé tu sueldo a ICBC y elegí tu beneficio de bienvenida entre:\nPréstamo Personal Tasa 0% de hasta $2.000.000.\nCashback "},{"n":"fabrica agosto","s":100,"f":"VIDEO","c":"Tu sueldo en ICBC es un SÍ. | Traé tu sueldo a ICBC y elegí tu beneficio de bienvenida entre:\nPréstamo Personal Tasa 0% de hasta $2.000.000.\nCashback "},{"n":"ivankv1","s":99,"f":"VIDEO","c":"ICBC Mall | ¿Todavía no conocés ICBC Mall? Es el marketplace de ICBC donde encontrás miles de productos, marcas y tiendas oficiales. Con descuentos, c"}]},{"p":"Meta","o":"Leads","n":29,"tk":"CTR","bt":0.0077,"ck":"CPC","bc":374.4,"med":53,"est":17,"rev":10,"fmt":{"VIDEO":52,"IMAGEN":62},"vt":{"gancho_2s":null,"ret_6s":null,"vista_completa":0.0501,"seg_vista":null},"vp":{"gancho_2s":null,"ret_6s":null,"vista_completa":0.0175,"seg_vista":null},"lin":{"Hipotecarios":71,"Pymes":50,"Sueldos":43},"nota":null,"ref":[{"n":"prestamo combinado","s":90,"f":"VIDEO","c":"Te escuchamos.  | Te acompañamos en las decisiones más importantes de tu vida."},{"n":"pozo v2","s":85,"f":"IMAGEN","c":"Te escuchamos.  | Invertí en la nueva propiedad con los Préstamos Hipotecarios UVA para compra desde pozo de ICBC."},{"n":"tasapreferencial","s":78,"f":"VIDEO","c":"Te escuchamos.  | Te acompañamos en las decisiones más importantes de tu vida."}]},{"p":"Meta","o":"Conversión","n":212,"tk":"CTR","bt":0.0144,"ck":"CPC","bc":185.73,"med":29.0,"est":14,"rev":60,"fmt":{"VIDEO":31,"IMAGEN":53},"vt":{"gancho_2s":null,"ret_6s":null,"vista_completa":0.047,"seg_vista":null},"vp":{"gancho_2s":null,"ret_6s":null,"vista_completa":0.0158,"seg_vista":null},"lin":{"YOY":44,"ICBC Mall":32},"nota":null,"ref":[{"n":"gastronomiaOCT viad","s":100,"f":"VIDEO","c":"Bajate YOY y aprovechá 30% OFF en morfi | Si pagás con QR en bares te devuelvo hasta $100.000 por por mes!🤑🤑🤑"},{"n":"plataforma10 nfeed","s":100,"f":"IMAGEN","c":"Alta promo en Plataforma 10 | 20% OFF para organizar ese viaje que tanto querés."},{"n":"plataforma10 nfeed","s":100,"f":"IMAGEN","c":"Alta promo en Plataforma 10 | 20% OFF para organizar ese viaje que tanto querés."}]},{"p":"Meta","o":"Engagement","n":24,"tk":"Interacción","bt":0.0338,"ck":"CPE","bc":25.64,"med":0.0,"est":17,"rev":71,"fmt":{"VIDEO":24},"vt":{"gancho_2s":null,"ret_6s":null,"vista_completa":0.1436,"seg_vista":null},"vp":{"gancho_2s":null,"ret_6s":null,"vista_completa":0.0596,"seg_vista":null},"lin":{},"nota":"Muestra chica (24 piezas, casi todas boosts de YOY): tomar con cautela.","ref":[{"n":"promos boost","s":100,"f":"VIDEO","c":"Hay que mantener el hobby sano 😌✨ (Ningún gasto innecesario fue realizado en la producción de este video) ⁣\n⁣\nDescargate mi app y enterate de todos mi"},{"n":"heladerias boost","s":100,"f":"VIDEO","c":"Y SIIIII!! El domingo de heladito te lo patrocino con mi 30% OFF (dale, animate a mandarle el video 😉)⁣\n⁣\nAplican T&C, encontralos en la app. Link en "},{"n":"seguridad boost","s":93,"f":"VIDEO","c":"Atenti a las estafas! Yo nunca te voy a pedir tus claves, pins o que me transfieras. Y fijate que yo solo te hablo de mis canales oficialessss!! Cuida"}]},{"p":"YouTube","o":"Views","n":51,"tk":"VTR","bt":0.3837,"ck":null,"bc":null,"med":45,"est":0,"rev":41,"fmt":{"VIDEO":50,"SHORT":28},"vt":{"gancho_2s":null,"ret_6s":null,"vista_completa":null,"seg_vista":null},"vp":{"gancho_2s":null,"ret_6s":null,"vista_completa":null,"seg_vista":null},"lin":{"Reposicionamiento":45},"nota":null,"ref":[{"n":"6s 16.9","s":74,"f":"VIDEO","c":""},{"n":"6s 16.9","s":74,"f":"VIDEO","c":""},{"n":"redu 16.9","s":73,"f":"VIDEO","c":""}]}],"c":{"Meta":{"CTA":{"DOWNLOAD":59,"INSTALL_MOBILE_APP":48,"LEARN_MORE":49,"SEE_DETAILS":47,"SHOP_NOW":44,"WATCH_MORE":49},"emoji":{"con emoji":45,"sin emoji":50},"hashtags":{"con hashtags":46,"sin hashtags":49},"largo copy":{"corto (<90 car.)":52,"largo (>220)":48,"medio (90-220)":47},"números":{"con cifras/%/$":46,"sin cifras":49},"pregunta":{"con pregunta":51,"sin pregunta":47}},"TikTok":{"CTA":{"LEARN_MORE":62,"sin CTA":47},"emoji":{"con emoji":51,"sin emoji":48},"hashtags":{"con hashtags":47,"sin hashtags":50},"largo copy":{"corto (<90 car.)":53,"largo (>220)":49,"medio (90-220)":47},"números":{"con cifras/%/$":46,"sin cifras":51},"pregunta":{"con pregunta":50,"sin pregunta":49}}},"a":["TikTok Alcance: las líneas Reposicionamiento (score prom. 69) y YOY (59) rinden más; Sueldos (26) es la más floja. Conceptos con vocero/asesor (Iván, Paula) y temas de coyuntura financiera explicados (dólar, bonos vs acciones) son estrellas.","TikTok: los videos de 6 s o menos se ven completos casi el doble (9,4% llega al final vs 5,4% en 7–15 s).","TikTok: el cuartil top tiene un gancho (views 2 s / impresiones) ~3 veces mayor que el peor cuartil: los primeros 2 segundos definen la pieza.","TikTok Conversión (YOY): piezas tipo creador/UGC con gancho fuerte (gancho 2 s ~40% y retención 6 s ~77% en el top) superan ampliamente a las genéricas ('generico', 'nuevo mes').","Meta Alcance: imagen promedia 56 vs video 48. Inversiones (64) y Reposicionamiento (60) arriba; Amplificaciones (39) abajo.","Meta Conversión: imagen 53 vs video 31; los videos de catálogo de ICBC Mall (smart TV, lavavajillas, lanzamientos) quedan en 0. Gastronomía/promos concretas de YOY funcionan.","Meta Tráfico: video 53 vs imagen 46; ICBC Mall (57) y piezas con beneficio concreto y claro en el copy (sueldo + beneficio de bienvenida) son las mejores.","Meta Leads (Hipotecarios): imagen 62 vs video 52; 'tasa preferencial' y 'préstamo combinado' son los mejores conceptos.","YouTube Views: video horizontal 16:9 rinde mucho mejor que 9:16 (las versiones 9.16 y 'hero' largas son las peores); shorts promedian 28.","Copy: en TikTok, copys cortos (<90 caracteres) promedian 53 vs 47–49 de los largos, y tener CTA LEARN_MORE promedia 62 vs 47 sin CTA. En Meta las diferencias por copy son chicas (preguntas +4, sin hashtags +3)."]}</script>
+<script>
+(() => {
+const KB = JSON.parse(document.getElementById('kb').textContent);
+const $ = (s) => document.querySelector(s);
+const el = (t, c, x) => { const e = document.createElement(t); if (c) e.className = c; if (x != null) e.textContent = x; return e; };
+const st = { p: 'TikTok', o: 'Alcance', ck: {} };
+const CHECKS = [
+['hook', 'Engancha en los primeros 2 segundos (movimiento, cara, pregunta o dato fuerte)', 'video'],
+['marca', 'La marca ICBC o YOY se ve en los primeros 3 segundos'],
+['beneficio', 'El beneficio o la oferta se entiende sin audio (texto en pantalla o subtítulos)'],
+['persona', 'Aparece una persona hablando a cámara (vocero, asesor o creador)'],
+['nativo', 'Se ve nativa de la plataforma (no parece un aviso de TV recortado)'],
+['legible', 'El texto en pantalla se lee bien en un celular (pocas palabras, buen contraste)']];
+const grp = () => KB.g.find((g) => g.p === st.p && g.o === st.o);
+const pct = (x, d = 2) => x == null ? '—' : (x * 100).toLocaleString('es-AR', { maximumFractionDigits: d }) + '%';
+const money = (x) => x == null ? '—' : '$ ' + x.toLocaleString('es-AR', { maximumFractionDigits: 2 });
+const seg = (box, items, cur, on, lab) => box.replaceChildren(...items.map((it) => { const b = el('button', '', lab ? lab(it) : it); b.type = 'button'; b.setAttribute('aria-pressed', String(it === cur)); b.onclick = () => on(it); return b; }));
+const draw = () => {
+seg($('#plat'), ['TikTok', 'Meta', 'YouTube'], st.p, (p) => { st.p = p; const os = KB.g.filter((g) => g.p === p).sort((a, b) => b.n - a.n); st.o = os[0].o; draw(); });
+seg($('#obj'), KB.g.filter((g) => g.p === st.p).sort((a, b) => b.n - a.n).map((g) => g.o), st.o, (o) => { st.o = o; draw(); });
+const g = grp(); $('#gt').textContent = `Lo que sabemos de ${st.p} · ${st.o}`;
+const t = (k, v) => { const d = el('div', 't'); d.append(el('div', 'k', k), el('div', 'v', v)); return d; };
+const ts = [t(`Benchmark ${g.tk}`, pct(g.bt)), t('Piezas analizadas', String(g.n)), t('Score mediano', String(Math.round(g.med))), t('Estrellas · a revisar', `${g.est}% · ${g.rev}%`)];
+if (g.bc != null) ts.splice(1, 0, t(`Costo ${g.ck}`, money(g.bc)));
+$('#tiles').replaceChildren(...ts);
+$('#checks').replaceChildren(...CHECKS.filter((c) => c[2] !== 'video' || $('#fmt').value === 'VIDEO').map(([id, txt]) => { const r = el('div', 'ck'); r.append(el('span', '', txt)); const s = el('div', 'seg'); seg(s, ['Sí', 'No', 'No sé'], st.ck[id] || 'No sé', (v) => { st.ck[id] = v; draw(); }); r.append(s); return r; }));
+};
+$('#fmt').onchange = draw;
+const ci = () => { const n = $('#copy').value.length; $('#ci').textContent = n + ' caracteres' + (n ? n < 90 ? ' · corto' : n <= 220 ? ' · medio' : ' · largo' : ''); };
+$('#copy').oninput = ci;
+const ratioOf = (w, h) => { const r = w / h; return r > 1.4 ? '16:9' : r > 0.9 ? '1:1' : r > 0.7 ? '4:5' : '9:16'; };
+const handle = (f) => { if (!f) return; const u = URL.createObjectURL(f);
+if (f.type.startsWith('video/')) { const v = document.createElement('video'); v.src = u; v.muted = true; v.controls = true; v.onloadedmetadata = () => { $('#fmt').value = 'VIDEO'; $('#dur').value = Math.round(v.duration); $('#ratio').value = ratioOf(v.videoWidth, v.videoHeight); draw(); $('#prev').replaceChildren(v, el('span', 'mono', `${Math.round(v.duration)} s · ${v.videoWidth}×${v.videoHeight}`)); }; }
+else { const i = new Image(); i.src = u; i.onload = () => { $('#fmt').value = 'IMAGEN'; $('#dur').value = ''; $('#ratio').value = ratioOf(i.naturalWidth, i.naturalHeight); draw(); $('#prev').replaceChildren(i, el('span', 'mono', `${i.naturalWidth}×${i.naturalHeight}`)); }; } };
+const drop = $('#drop'); drop.onclick = () => $('#file').click(); drop.onkeydown = (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); $('#file').click(); } };
+$('#file').onchange = (e) => handle(e.target.files[0]);
+drop.ondragover = (e) => { e.preventDefault(); drop.classList.add('over'); }; drop.ondragleave = () => drop.classList.remove('over');
+drop.ondrop = (e) => { e.preventDefault(); drop.classList.remove('over'); handle(e.dataTransfer.files[0]); };
+const analyze = () => {
+const g = grp(), F = [], R = [];
+const base = g.med; let s = base;
+const add = (lbl, d, rec) => { d = Math.round(d); if (!d) return; F.push([lbl, d]); s += d; if (d < 0 && rec) R.push([Math.abs(d), rec]); };
+const fmt = $('#fmt').value, dur = +$('#dur').value || 0, ratio = $('#ratio').value, lin = $('#linea').value, cta = $('#cta').value, copy = $('#copy').value.trim();
+// formato
+if (g.fmt[fmt] != null) { const alt = Object.entries(g.fmt).sort((a, b) => b[1] - a[1])[0]; add(`Formato ${fmt.toLowerCase()} (promedio ${g.fmt[fmt]} en este objetivo)`, (g.fmt[fmt] - base) * 0.7, alt[0] !== fmt ? `En ${st.p} ${st.o} el ${alt[0].toLowerCase()} rinde más (${alt[1]} contra ${g.fmt[fmt]}). Si podés, probá una versión en ${alt[0].toLowerCase()}.` : null); }
+// línea
+if (g.lin[lin] != null) { const vals = Object.values(g.lin), avg = vals.reduce((a, b) => a + b, 0) / vals.length; const best = Object.entries(g.lin).sort((a, b) => b[1] - a[1])[0];
+add(`Línea ${lin} (promedio ${g.lin[lin]} en este objetivo)`, (g.lin[lin] - avg) * 0.5, `Las piezas de ${lin} promedian ${g.lin[lin]} acá; las de ${best[0]} llegan a ${best[1]}. Mirá cómo resuelven el mensaje las piezas de referencia.`); }
+// video: duración y proporción
+if (fmt === 'VIDEO' && dur) {
+if (st.p === 'TikTok' || st.p === 'Meta') {
+if (dur <= 15) add('Video corto (15 s o menos)', 3);
+else if (dur > 30) add(`Video largo (${dur} s)`, -8, `Con ${dur} s muy poca gente llega al final (en TikTok los videos de 6 s o menos se ven completos casi el doble). Probá una versión de 6 a 15 s con el mensaje clave al principio.`);
+}
+if (st.p === 'YouTube') { if (ratio === '16:9') add('Horizontal 16:9 en YouTube', 4); else add(`Vertical (${ratio}) en YouTube`, -10, 'En YouTube Views las versiones 9:16 rinden mucho peor que las 16:9 (los shorts promedian 28). Usá la versión horizontal.'); }
+if (st.p === 'TikTok' && ratio !== '9:16') add(`Proporción ${ratio} en TikTok`, -6, 'TikTok es pantalla completa vertical: exportá en 9:16 (1080×1920) para no perder espacio.');
+}
+if (st.p === 'Meta' && fmt !== 'VIDEO' && ratio === '16:9') add('Imagen horizontal en Meta', -4, 'En feed y stories rinden mejor los formatos 4:5 o 9:16, que ocupan más pantalla.');
+// copy
+const C = KB.c[st.p];
+if (C && copy) {
+const pm = 49, fx = (a, v, lbl, rec) => { const sc = C[a] && C[a][v]; if (sc != null) add(lbl + ` (promedio ${sc})`, (sc - pm) * 0.6, rec); };
+const L = copy.length;
+fx('largo copy', L < 90 ? 'corto (<90 car.)' : L <= 220 ? 'medio (90-220)' : 'largo (>220)', `Copy ${L < 90 ? 'corto' : L <= 220 ? 'medio' : 'largo'} (${L} caracteres)`, `Acortá el copy a menos de 90 caracteres: en ${st.p} los copys cortos rinden mejor. Dejá la idea principal y el llamado a la acción.`);
+fx('pregunta', /\?/.test(copy) ? 'con pregunta' : 'sin pregunta', /\?/.test(copy) ? 'El copy abre con una pregunta' : 'El copy no tiene pregunta', 'Probá abrir con una pregunta que el público se haga.');
+fx('hashtags', /#/.test(copy) ? 'con hashtags' : 'sin hashtags', /#/.test(copy) ? 'Usa hashtags' : 'Sin hashtags', 'Sacá los hashtags: las piezas sin hashtags rinden un poco mejor.');
+fx('emoji', /\p{Extended_Pictographic}/u.test(copy) ? 'con emoji' : 'sin emoji', /\p{Extended_Pictographic}/u.test(copy) ? 'Usa emojis' : 'Sin emojis', /\p{Extended_Pictographic}/u.test(copy) ? 'Probá con menos emojis.' : null);
+fx('números', /\d|%|\$/.test(copy) ? 'con cifras/%/$' : 'sin cifras', /\d|%|\$/.test(copy) ? 'Incluye cifras, % o $' : 'Sin cifras', null);
+} else if (!copy) R.push([3, 'Cargá el copy para evaluarlo.']);
+if (C) { const k = cta || 'sin CTA'; const sc = C.CTA && C.CTA[k]; if (sc != null) add(`CTA: ${cta || 'sin CTA'} (promedio ${sc})`, (sc - 49) * 0.4, st.p === 'TikTok' && !cta ? 'Sumá un CTA ("Más información"): en TikTok las piezas con CTA promedian 62 contra 47 sin CTA.' : 'Revisá el CTA: hay otros que rinden mejor en esta plataforma.'); }
+if (/Tráfico|Conversión|Leads/.test(st.o) && copy && !/(link|clic|descarg|ingres|entr[aá]|conoc[eé]|ped[ií]|ped[ií]|solicit|simul|hac[eé]te|abr[ií])/i.test(copy)) add('El copy no pide una acción', -4, `Para ${st.o} el copy tiene que decir qué hacer: "Descargá", "Pedilo", "Conocé más en el link".`);
+// chequeo
+const W = { hook: [3, -8, 'Mejorá el arranque: los primeros 2 s definen la pieza. En TikTok el gancho de las mejores es unas 3 veces el de las peores. Empezá con una cara, movimiento o el dato más fuerte.'],
+marca: [1, -4, 'Mostrá la marca en los primeros 3 segundos, no solo al cierre.'], beneficio: [2, -6, 'Que el beneficio se entienda sin audio: la mayoría mira sin sonido. Sumá texto en pantalla o subtítulos.'],
+persona: [2, -2, 'Probá una versión con una persona hablando a cámara: los conceptos con voceros o asesores (Iván, Paula) están entre los mejores de la cuenta.'],
+nativo: [1, -6, 'Hacela más nativa de la plataforma: las piezas que parecen aviso de TV rinden menos que las que parecen contenido.'], legible: [1, -4, 'Simplificá el texto en pantalla: pocas palabras, letra grande y buen contraste.'] };
+for (const [id, txt, only] of CHECKS) { if (only === 'video' && fmt !== 'VIDEO') continue; const a = st.ck[id]; if (a === 'Sí') add('✓ ' + txt, W[id][0]); else if (a === 'No') add('✗ ' + txt, W[id][1], W[id][2]); }
+s = Math.max(0, Math.min(100, Math.round(s)));
+const unk = CHECKS.filter((c) => (c[2] !== 'video' || fmt === 'VIDEO') && !['Sí', 'No'].includes(st.ck[c[0]])).length;
+const w = 8 + unk * 2 + (copy ? 0 : 4);
+return { g, base, s, lo: Math.max(0, s - w), hi: Math.min(100, s + w), F, R: R.sort((a, b) => b[0] - a[0]).map((r) => r[1]), unk, copy };
+};
+const show = () => {
+const x = analyze(), r = $('#res'); r.replaceChildren();
+const cls = x.s >= 58 ? 'v-ok' : x.s >= 40 ? 'v-wa' : 'v-no', lab = x.s >= 58 ? 'Lista para pautar' : x.s >= 40 ? 'Ajustar antes de pautar' : 'No pautar así';
+const v = el('div', 'verdict ' + cls); const tx = el('div'); tx.append(el('b', '', lab), el('span', '', `Score esperado ${x.lo}–${x.hi} en ${st.p} · ${st.o}. La mitad de las piezas de este objetivo saca ${Math.round(x.base)} o menos.`)); v.append(el('div', 'big', String(x.s)), tx); r.append(v);
+const sc = el('div', 'scale'); const b = el('i'); b.style.left = x.lo + '%'; b.style.width = Math.max(2, x.hi - x.lo) + '%'; sc.append(b); const sl = el('div', 'sl'); ['0', 'a revisar', '40', 'en línea', '60', 'sólida', '75', 'estrella', '100'].forEach((q) => sl.append(el('span', '', q))); r.append(sc, sl);
+if (x.unk) r.append(el('p', 'mono', `Quedan ${x.unk} preguntas del chequeo sin responder: el rango es más ancho.`));
+r.append(el('h3', '', 'Qué cambiar antes de pautar'));
+const ul = el('ul'); (x.R.length ? x.R.slice(0, 6) : ['No encontramos nada importante para cambiar según los datos de la cuenta.']).forEach((t) => ul.append(el('li', '', t))); r.append(ul);
+r.append(el('h3', '', 'De dónde sale el score'));
+const tb = el('table'); const hr = el('tr'); hr.append(el('th', '', 'Factor'), el('th', '', 'Puntos')); tb.append(hr);
+const row = (a, d, strong) => { const tr = el('tr'); const td = el('td', '', a); if (strong) td.style.fontWeight = '600'; tr.append(td, el('td', 'n ' + (d > 0 ? 'pos' : d < 0 ? 'neg' : ''), (d > 0 ? '+' : '') + d)); tb.append(tr); };
+row(`Punto de partida: score mediano de ${st.p} · ${st.o}`, Math.round(x.base), true); x.F.forEach(([a, d]) => row(a, d)); row('Score estimado', x.s, true); r.append(tb);
+if (x.g.ref.length) { r.append(el('h3', '', 'Piezas de referencia de este objetivo')); x.g.ref.forEach((p) => { const d = el('div', 'ref'); d.append(el('b', '', `${p.n} · score ${p.s} · ${p.f.toLowerCase()}`)); if (p.c) d.append(el('div', 'mono', p.c)); r.append(d); }); }
+if (x.g.nota) r.append(el('p', 'mono', x.g.nota));
+};
+$('#f').addEventListener('submit', (e) => { e.preventDefault(); show(); });
+$('#ej').onclick = () => { st.p = 'TikTok'; st.o = 'Alcance'; $('#fmt').value = 'VIDEO'; $('#ratio').value = '9:16'; $('#dur').value = 68; $('#linea').value = 'Inversiones'; $('#cta').value = 'LEARN_MORE';
+$('#copy').value = '¿Dólar MEP, CEDEARs o Inversión Fácil?💡💸 Antes de tu próxima decisión, descubrí algunos mitos y verdades para hacer que tu dinero de un paso más allá. Vos decidís si invertir en pesos o en dólares, mientras nuestros expertos se encargan de planificar una estrategia diversificada para vos. 📲 Además, podés gestionar tus inversiones desde ICBC Mobile Banking y desde el nuevo ICBC Online Banking. Conocé más en el link de nuestro perfil. #ExpertosEnInversiones #ICBCSí';
+st.ck = { hook: 'No', marca: 'No', beneficio: 'Sí', persona: 'Sí', nativo: 'Sí', legible: 'Sí' }; ci(); draw(); show();
+$('#prev').replaceChildren(el('span', 'mono', 'Ejemplo real: "Dólar MEP" (Inversiones, TikTok Alcance, sep–nov 2026). Resultado real: score 48 en la versión principal (3,6 M de impresiones). Arranca con una asesora sonriendo y el título "¿Mito o verdad?" recién al segundo 1; la marca aparece al cierre.')); };
+draw(); ci();
+})();
+</script>
+</body>
+</html>
