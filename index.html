@@ -518,6 +518,9 @@ dash.calc("campSema", { inputs: ["campanias"], title: "Semáforo de campañas", 
 .pz-tabs { display: inline-flex; gap: 4px; padding: 4px; border-radius: 999px; background: var(--soft); }
 .pz-tab { appearance: none; border: 0; cursor: pointer; padding: 8px 16px; border-radius: 999px; background: transparent; color: var(--color-fg-muted); font-weight: 500; }
 .pz-tab[aria-selected="true"] { background: var(--color-fg); color: var(--color-bg); }
+.pz-tablink { display: inline-flex; align-items: center; padding: 8px 16px; border-radius: 999px; color: var(--color-fg-muted); font-weight: 500; text-decoration: none; white-space: nowrap; }
+.pz-tablink:hover { color: var(--color-fg); }
+.pz-tablink:focus-visible { outline: 2px solid var(--hi); outline-offset: 2px; }
 .pz-months { display: flex; gap: 4px; overflow-x: auto; scrollbar-width: none; max-width: 100%; padding: 2px; }
 .pz-months::-webkit-scrollbar { display: none; }
 .pz-m { appearance: none; cursor: pointer; flex: none; border: 1px solid transparent; background: transparent; color: var(--color-fg-muted); padding: 7px 12px; border-radius: 10px; font-size: 13px; font-weight: 500; font-variant-numeric: tabular-nums; }
@@ -903,6 +906,7 @@ dash.calc("campSema", { inputs: ["campanias"], title: "Semáforo de campañas", 
       <button class="pz-tab" role="tab" data-v="creativos" aria-selected="false">Piezas</button>
       <button class="pz-tab" role="tab" data-v="views" aria-selected="false">Views y retención</button>
       <button class="pz-tab" role="tab" data-v="claves" aria-selected="false">Best practices</button>
+      <a class="pz-tablink" href="fatiga.html">Fatiga creativa</a>
     </div></div>
     <div class="pz-fg pz-fg-m"><span class="pz-fl">Período</span>
     <div class="pz-months" id="meses" role="group" aria-label="Período" data-source="objetivos"></div></div>
