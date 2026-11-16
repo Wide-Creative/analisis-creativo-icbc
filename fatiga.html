@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fatiga creativa · ICBC</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Fraunces:ital,opsz,wght@0,9..144,400;1,9..144,400&display=swap" rel="stylesheet">
+<style>
+:root { --fg: #1b1820; --muted: #6b6474; --bg: #f7f5f2; --panel: #ffffff; --line: #e6e1dc; --soft: #efebe6;
+--ok: #138a52; --ok-s: #e2f3ea; --warn: #b7791f; --warn-s: #faefd9; --bad: #d23b3f; --bad-s: #fbe3e3; --acc: #e8662a;
+--sans: "DM Sans", system-ui, sans-serif; --serif: "Fraunces", Georgia, serif; color-scheme: light; }
+@media (prefers-color-scheme: dark) { :root { --fg: #f2eee9; --muted: #a69eac; --bg: #141218; --panel: #1d1a22; --line: #2e2a34; --soft: #26222c;
+--ok: #4fd18b; --ok-s: #16301f; --warn: #f0b84a; --warn-s: #33280f; --bad: #ff6b6f; --bad-s: #3a1a1c; color-scheme: dark; } }
+* { box-sizing: border-box; } html, body { margin: 0; }
+body { background: var(--bg); color: var(--fg); font: 14px/1.45 var(--sans); }
+.w { max-width: 1320px; margin: 0 auto; padding: 20px 16px 48px; display: grid; gap: 22px; }
+a { color: inherit; }
+.top { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+.back { text-decoration: none; font-weight: 500; padding: 8px 14px; border-radius: 999px; background: var(--soft); }
+.hero { background: #17141b; color: #f4efe9; border-radius: 18px; padding: 26px 24px; display: grid; gap: 10px; }
+.kick { font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: #c9c0cf; display: flex; gap: 8px; align-items: center; }
+.kick::before { content: ""; width: 24px; height: 2px; background: var(--acc); }
+h1 { font: 400 clamp(2.2rem, 6vw, 4.2rem)/.95 var(--serif); margin: 0; letter-spacing: -.02em; }
+h1 em { color: var(--acc); }
+.hero p { margin: 0; max-width: 75ch; color: #d9d2dc; }
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 10px; margin-top: 8px; }
+.st { background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1); border-radius: 12px; padding: 12px 14px; }
+.st .k { font-size: 12px; color: #c9c0cf; text-transform: uppercase; letter-spacing: .06em; display: flex; gap: 6px; align-items: center; }
+.st .v { font: 400 2rem/1.1 var(--serif); font-variant-numeric: tabular-nums; }
+.dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+.d-f { background: var(--bad); } .d-a { background: var(--warn); } .d-o { background: var(--ok); }
+.bar { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.seg { display: inline-flex; gap: 4px; padding: 4px; border-radius: 999px; background: var(--soft); flex-wrap: wrap; }
+.seg button { appearance: none; border: 0; cursor: pointer; padding: 8px 14px; border-radius: 999px; background: transparent; color: var(--muted); font: 500 14px var(--sans); }
+.seg button[aria-pressed="true"] { background: var(--fg); color: var(--bg); }
+.seg button:focus-visible, .back:focus-visible, input:focus-visible { outline: 2px solid var(--acc); outline-offset: 2px; }
+input[type=search] { font: inherit; color: var(--fg); background: var(--panel); border: 1px solid var(--line); border-radius: 999px; padding: 8px 14px; min-width: 220px; }
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 18px; display: grid; gap: 12px; }
+h2 { font: 400 1.7rem/1.1 var(--serif); margin: 0; }
+.sub { color: var(--muted); margin: 0; max-width: 80ch; }
+.rot { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 10px; }
+.rc { border: 1px solid var(--line); border-left: 4px solid var(--bad); border-radius: 10px; padding: 12px; display: grid; gap: 4px; }
+.rc b { font-weight: 600; overflow-wrap: anywhere; }
+.rc .m { color: var(--muted); font-size: 13px; }
+.rc .why { font-size: 13px; }
+.tw { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; min-width: 900px; }
+th, td { text-align: left; padding: 9px 8px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+th { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; font-weight: 500; cursor: pointer; white-space: nowrap; }
+td.n { font-variant-numeric: tabular-nums; white-space: nowrap; }
+td .pz { font-weight: 600; overflow-wrap: anywhere; }
+td .cp { color: var(--muted); font-size: 12px; }
+.chip { display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; white-space: nowrap; }
+.c-f { background: var(--bad-s); color: var(--bad); } .c-a { background: var(--warn-s); color: var(--warn); } .c-o { background: var(--ok-s); color: var(--ok); }
+.neg { color: var(--bad); } .pos { color: var(--ok); }
+svg.sp { display: block; }
+.how { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+.how div { background: var(--soft); border-radius: 10px; padding: 12px 14px; }
+.how b { display: block; margin-bottom: 4px; }
+.msg { color: var(--muted); }
+.err { color: var(--bad); }
+footer { color: var(--muted); font-size: 13px; }
+</style>
+</head>
+<body>
+<div class="w">
+<div class="top">
+<a class="back" href="./">← Volver al tablero</a>
+<span class="msg" id="upd">Leyendo la planilla…</span>
+</div>
+<section class="hero">
+<div class="kick">ICBC · contenidos pagos · últimas 8 semanas</div>
+<h1>Fatiga <em>creativa</em></h1>
+<p>Qué piezas que siguen al aire ya se gastaron: su tasa clave viene cayendo semana a semana o cada resultado sale más caro. Las fatigadas conviene rotarlas o refrescarlas antes de seguir invirtiendo.</p>
+<div class="stats" id="stats"></div>
+</section>
+<div class="bar">
+<div class="seg" id="plat" role="group" aria-label="Plataforma"></div>
+<div class="seg" id="lvl" role="group" aria-label="Estado"></div>
+<input type="search" id="q" placeholder="Buscar pieza o campaña" aria-label="Buscar pieza o campaña">
+</div>
+<section class="panel">
+<h2>Para rotar esta semana</h2>
+<p class="sub">Piezas fatigadas que tuvieron inversión la última semana, ordenadas por cuánto gastaron.</p>
+<div class="rot" id="rot"><p class="msg">Cargando…</p></div>
+</section>
+<section class="panel">
+<h2>Todas las piezas activas</h2>
+<p class="sub">Una fila por pieza que tuvo impresiones la última semana completa. La curva muestra la tasa clave de cada semana; el punto final es la última.</p>
+<div class="tw"><table id="tbl"><thead><tr>
+<th data-s="estado">Estado</th><th data-s="nombre">Pieza</th><th data-s="plat">Plataforma · objetivo</th><th data-s="sem">Semanas</th>
+<th>Tasa por semana</th><th data-s="caida">Tasa: inicio → ahora</th><th data-s="costo">Costo por resultado</th><th data-s="freq">Frec. última sem.</th><th data-s="inv">Inversión últ. sem.</th>
+</tr></thead><tbody id="tb"><tr><td colspan="9" class="msg">Cargando…</td></tr></tbody></table></div>
+</section>
+<section class="panel">
+<h2>Cómo se calcula</h2>
+<div class="how">
+<div><b>Tasa clave</b>Alcance y Engagement: interacción (ER en TikTok, clics totales en Meta). Views: views de 6 s (TikTok) o views (YouTube) sobre impresiones. Tráfico, Leads y Conversión: CTR.</div>
+<div><b>Comparación</b>Se compara el promedio de las 2 primeras semanas activas de la pieza contra el de las 2 últimas. Solo cuentan semanas con más de 1.000 impresiones.</div>
+<div><b>Fatigada</b>Lleva 3 semanas o más al aire y su tasa cayó 25% o más, o su costo por resultado subió 20% o más.</div>
+<div><b>Atención</b>Cayó entre 10% y 25%, el costo subió entre 10% y 20%, o la frecuencia de la última semana es 3 o más. <b style="display:inline">Fresca</b>: el resto, incluidas las piezas con menos de 3 semanas.</div>
+</div>
+</section>
+<footer>Fuente: planilla Acumulado pago ICBC, pestañas FATIGA META, FATIGA TIKTOK y FATIGA YOUTUBE (Supermetrics, semanas de lunes a domingo, se actualizan todos los días a las 4:00).</footer>
+</div>
+<script>
+let icbcCamp = (x) => String(x || ''), icbcPieza = (a) => String(a || '');
+(() => {
+const SHEET = 'https://docs.google.com/spreadsheets/d/1T3ZY6huZGhDH0gPK56mdYe7ZuzkPW4Lv6U6Qh9va3EA/export?format=csv&gid=';
+const G = { Meta: 1092565645, TikTok: 1475059960, YouTube: 756105154 };
+const $ = (s) => document.querySelector(s);
+const el = (t, c, x) => { const e = document.createElement(t); if (c) e.className = c; if (x != null) e.textContent = x; return e; };
+const csv = (t) => { const out = []; let row = [], f = '', q = false; for (let i = 0; i < t.length; i++) { const c = t[i]; if (q) { if (c === '"') { if (t[i + 1] === '"') { f += '"'; i++; } else q = false; } else f += c; } else if (c === '"') q = true; else if (c === ',') { row.push(f); f = ''; } else if (c === '\n') { row.push(f); out.push(row); row = []; f = ''; } else if (c !== '\r') f += c; } if (f || row.length) { row.push(f); out.push(row); } return out; };
+const num = (x) => { if (x == null || x === '') return 0; const s = String(x).trim(); if (/^-?\d+(,\d+)?$/.test(s)) return +s.replace(',', '.'); if (/^-?[\d.]+(,\d+)?$/.test(s)) return +s.replace(/\./g, '').replace(',', '.'); const v = +s; return isFinite(v) ? v : 0; };
+const rowsOf = (t) => { const v = csv(t); const h = v[0] || []; return v.slice(1).filter((r) => r.some((c) => c)).map((r) => Object.fromEntries(h.map((c, i) => [c, r[i] ?? '']))); };
+const wk = (s) => { const m = String(s).match(/(\d{4})\D+(\d{1,2})/); return m ? +m[1] * 100 + +m[2] : 0; };
+const objTT = (o, c) => ({ REACH: 'Alcance', RF_REACH: 'Alcance', VIDEO_VIEWS: 'Views', TRAFFIC: 'Tráfico', ENGAGEMENT: 'Engagement', APP_PROMOTION: 'Conversión', PRODUCT_SALES: 'Conversión', WEB_CONVERSIONS: 'Conversión', LEAD_GENERATION: 'Leads' })[o] || (/REPRODUCCION|VIEWS/i.test(c) ? 'Views' : 'Alcance');
+const objMeta = (o) => ({ OUTCOME_AWARENESS: 'Alcance', OUTCOME_TRAFFIC: 'Tráfico', OUTCOME_ENGAGEMENT: 'Engagement', OUTCOME_LEADS: 'Leads', OUTCOME_APP_PROMOTION: 'Conversión', OUTCOME_SALES: 'Conversión' })[o] || 'Alcance';
+const objYT = (io) => (/views/i.test(io) ? 'Views' : /demandgen|clics|trafico|performance|conversion/i.test(io) ? 'Tráfico' : 'Alcance');
+const KEY = { Alcance: 'Interacción', Engagement: 'Interacción', Views: 'VTR', 'Tráfico': 'CTR', Leads: 'CTR', 'Conversión': 'CTR' };
+const pieces = new Map();
+const add = (plat, obj, camp, ad, grupo, w, imp, cost, act, freq) => {
+const k = plat + '|' + camp + '|' + ad;
+const p = pieces.get(k) || { plat, obj, camp, ad, grupo, weeks: new Map() };
+const x = p.weeks.get(w) || { imp: 0, cost: 0, act: 0, fw: 0 };
+x.imp += imp; x.cost += cost; x.act += act; x.fw += freq * imp; p.weeks.set(w, x); pieces.set(k, p);
+};
+const load = async () => {
+const get = (g) => fetch(SHEET + g, { cache: 'no-store' }).then((r) => { if (!r.ok) throw new Error(r.status); return r.text(); });
+try { // usa las mismas reglas de nombres que el tablero (index.html)
+const src = await fetch('./', { cache: 'no-store' }).then((r) => r.text());
+const a = src.indexOf('const icbcCamp'), b = src.indexOf('};', src.indexOf('const icbcPieza'));
+if (a >= 0 && b > a) { const f = new Function(src.slice(a, b + 2) + '; return [icbcCamp, icbcPieza];')(); icbcCamp = f[0]; icbcPieza = f[1]; }
+} catch (_) {}
+const [me, tt, yt] = await Promise.all([get(G.Meta), get(G.TikTok), get(G.YouTube)]);
+for (const r of rowsOf(me)) { const o = objMeta(r['Campaign objective']); const imp = num(r['Impressions']);
+add('Meta', o, r['Campaign name'], r['Ad name'], r['Ad set name'], wk(r['Year & week (Mon-Sun)']), imp, num(r['Cost']), /Alcance|Engagement/.test(o) ? num(r['Clicks (all)']) : num(r['Link clicks']), num(r['Frequency'])); }
+for (const r of rowsOf(tt)) { const o = objTT(r['Campaign objective type'], r['Campaign name']); const imp = num(r['Impressions']);
+const eng = num(r['Paid likes']) + num(r['Paid shares']) + num(r['Paid follows']) + num(r['Paid comments']);
+add('TikTok', o, r['Campaign name'], r['Ad name'], r['Ad group name'], wk(r['Year & week']), imp, num(r['Cost']), o === 'Views' ? num(r['6-second video views']) : /Alcance|Engagement/.test(o) ? eng : num(r['Clicks']), num(r['Frequency'])); }
+for (const r of rowsOf(yt)) { const o = objYT(r['Insertion order']); const imp = num(r['Impressions']);
+const act = o === 'Tráfico' ? num(r['Clicks']) : num(r['Views']); if (o !== 'Tráfico' && !num(r['Views'])) continue;
+add('YouTube', o, r['Campaign'], r['TrueView Ad name'], r['Insertion order'], wk(r['Week (Mon-Sun)']), imp, num(r['Revenue']), act, 0); }
+};
+const analyze = () => {
+const allW = [...new Set([...pieces.values()].flatMap((p) => [...p.weeks.keys()]))].sort((a, b) => a - b);
+const last = allW[allW.length - 1];
+const out = [];
+for (const p of pieces.values()) {
+const ws = [...p.weeks.entries()].filter(([, x]) => x.imp >= 1000).sort((a, b) => a[0] - b[0]);
+const lw = p.weeks.get(last); if (!lw || lw.imp < 1000) continue;
+const rate = (arr) => { const i = arr.reduce((a, [, x]) => a + x.imp, 0); return i ? arr.reduce((a, [, x]) => a + x.act, 0) / i : null; };
+const cpr = (arr) => { const a = arr.reduce((s, [, x]) => s + x.act, 0); return a ? arr.reduce((s, [, x]) => s + x.cost, 0) / a : null; };
+const first = ws.slice(0, 2), lst = ws.slice(-2);
+const r0 = rate(first), r1 = rate(lst), c0 = cpr(first), c1 = cpr(lst);
+const caida = ws.length >= 3 && r0 ? 1 - r1 / r0 : null;
+const costo = ws.length >= 3 && c0 && c1 ? c1 / c0 - 1 : null;
+const freq = lw.imp ? lw.fw / lw.imp : 0;
+let estado = 'fresca', why = [];
+if (ws.length >= 3 && ((caida != null && caida >= 0.25) || (costo != null && costo >= 0.2))) estado = 'fatigada';
+else if ((caida != null && caida >= 0.1) || (costo != null && costo >= 0.1) || freq >= 3) estado = 'atención';
+if (caida != null && caida >= 0.1) why.push(`la tasa cayó ${Math.round(caida * 100)}%`);
+if (costo != null && costo >= 0.1) why.push(`el costo por resultado subió ${Math.round(costo * 100)}%`);
+if (freq >= 3) why.push(`frecuencia ${freq.toFixed(1)} la última semana`);
+out.push({ ...p, nombre: icbcPieza(p.ad, p.grupo), campana: icbcCamp(p.camp), sem: ws.length, serie: ws.map(([w, x]) => ({ w, r: x.imp ? x.act / x.imp : 0 })), r0, r1, c0, c1, caida, costo, freq, inv: lw.cost, estado, why });
+}
+return { rows: out, last };
+};
+const pct = (x, d = 2) => x == null ? '—' : (x * 100).toLocaleString('es-AR', { maximumFractionDigits: d }) + '%';
+const money = (x) => x == null ? '—' : '$ ' + Math.round(x).toLocaleString('es-AR');
+const short = (s) => s.replace(/_/g, ' ').toLowerCase().replace(/(^|\s)\S/g, (c) => c.toUpperCase());
+const spark = (serie) => {
+const W = 120, H = 32, P = 3; const ns = 'http://www.w3.org/2000/svg'; const s = document.createElementNS(ns, 'svg'); s.setAttribute('width', W); s.setAttribute('height', H); s.setAttribute('class', 'sp'); s.setAttribute('aria-hidden', 'true');
+if (serie.length < 2) return s;
+const mx = Math.max(...serie.map((d) => d.r)) || 1; const x = (i) => P + i * (W - 2 * P) / (serie.length - 1), y = (v) => H - P - (v / mx) * (H - 2 * P);
+const d = serie.map((p, i) => (i ? 'L' : 'M') + x(i).toFixed(1) + ' ' + y(p.r).toFixed(1)).join(' ');
+const area = document.createElementNS(ns, 'path'); area.setAttribute('d', d + ` L${x(serie.length - 1)} ${H - P} L${x(0)} ${H - P} Z`); area.setAttribute('fill', 'currentColor'); area.setAttribute('opacity', '.12');
+const line = document.createElementNS(ns, 'path'); line.setAttribute('d', d); line.setAttribute('fill', 'none'); line.setAttribute('stroke', 'currentColor'); line.setAttribute('stroke-width', '1.6');
+const c = document.createElementNS(ns, 'circle'); c.setAttribute('cx', x(serie.length - 1)); c.setAttribute('cy', y(serie[serie.length - 1].r)); c.setAttribute('r', '3'); c.setAttribute('fill', 'currentColor');
+s.append(area, line, c); return s;
+};
+const LV = { fatigada: ['c-f', 'd-f', 'Fatigada'], 'atención': ['c-a', 'd-a', 'Atención'], fresca: ['c-o', 'd-o', 'Fresca'] };
+const st = { plat: 'Todas', lvl: 'Todas', q: '', sort: 'estado', dir: 1 };
+let data = { rows: [], last: 0 };
+const segs = (box, items, key) => { box.replaceChildren(...items.map((it) => { const b = el('button', '', it); b.type = 'button'; b.setAttribute('aria-pressed', String(st[key] === it)); b.onclick = () => { st[key] = it; draw(); }; return b; })); };
+const draw = () => {
+segs($('#plat'), ['Todas', 'TikTok', 'Meta', 'YouTube'], 'plat');
+segs($('#lvl'), ['Todas', 'Fatigada', 'Atención', 'Fresca'], 'lvl');
+const base = data.rows.filter((r) => st.plat === 'Todas' || r.plat === st.plat);
+const cnt = (e) => base.filter((r) => r.estado === e).length;
+const invF = base.filter((r) => r.estado === 'fatigada').reduce((a, r) => a + r.inv, 0), invT = base.reduce((a, r) => a + r.inv, 0);
+const tile = (k, v, dot) => { const d = el('div', 'st'); const kk = el('div', 'k'); if (dot) kk.append(el('span', 'dot ' + dot)); kk.append(k); d.append(kk, el('div', 'v', v)); return d; };
+$('#stats').replaceChildren(tile('Piezas activas', String(base.length)), tile('Fatigadas', String(cnt('fatigada')), 'd-f'), tile('Atención', String(cnt('atención')), 'd-a'), tile('Frescas', String(cnt('fresca')), 'd-o'),
+tile('Inversión en fatigadas', invT ? Math.round(100 * invF / invT) + '%' : '—'));
+const q = st.q.toLowerCase();
+const rows = base.filter((r) => (st.lvl === 'Todas' || LV[r.estado][2] === st.lvl) && (!q || (r.nombre + ' ' + r.campana + ' ' + r.ad).toLowerCase().includes(q)));
+const rot = base.filter((r) => r.estado === 'fatigada').sort((a, b) => b.inv - a.inv).slice(0, 12);
+$('#rot').replaceChildren(...(rot.length ? rot.map((r) => { const c = el('div', 'rc'); c.append(el('b', '', r.nombre), el('span', 'm', `${r.plat} · ${r.obj} · ${short(r.campana)}`), el('span', 'why', 'Rotar: ' + r.why.join(', ') + '.'), el('span', 'm', `${money(r.inv)} invertidos la última semana · ${r.sem} semanas al aire`)); return c; }) : [el('p', 'msg', 'No hay piezas fatigadas con este filtro.')]));
+const ord = { fatigada: 0, 'atención': 1, fresca: 2 };
+const key = { estado: (r) => ord[r.estado] * 1e12 - r.inv, nombre: (r) => r.nombre, plat: (r) => r.plat + r.obj, sem: (r) => -r.sem, caida: (r) => -(r.caida ?? -9), costo: (r) => -(r.costo ?? -9), freq: (r) => -r.freq, inv: (r) => -r.inv }[st.sort];
+rows.sort((a, b) => { const x = key(a), y = key(b); return (x < y ? -1 : x > y ? 1 : 0) * st.dir; });
+const tb = $('#tb');
+if (!rows.length) { tb.replaceChildren((() => { const tr = el('tr'); const td = el('td', 'msg', 'No hay piezas con este filtro.'); td.colSpan = 9; tr.append(td); return tr; })()); return; }
+tb.replaceChildren(...rows.map((r) => {
+const tr = el('tr'); const [cc, dc, lb] = LV[r.estado];
+const c1 = el('td'); const ch = el('span', 'chip ' + cc); ch.append(el('span', 'dot ' + dc), lb); c1.append(ch);
+const c2 = el('td'); c2.append(el('div', 'pz', r.nombre), el('div', 'cp', short(r.campana))); c2.title = r.ad;
+const c3 = el('td', '', `${r.plat} · ${r.obj}`);
+const c4 = el('td', 'n', String(r.sem));
+const c5 = el('td'); c5.style.color = r.estado === 'fatigada' ? 'var(--bad)' : r.estado === 'atención' ? 'var(--warn)' : 'var(--ok)'; c5.append(spark(r.serie));
+const c6 = el('td', 'n'); c6.append(`${KEY[r.obj]} ${pct(r.r0)} → ${pct(r.r1)} `); if (r.caida != null) c6.append(el('span', r.caida > 0 ? 'neg' : 'pos', `(${r.caida > 0 ? '−' : '+'}${Math.abs(Math.round(r.caida * 100))}%)`));
+const c7 = el('td', 'n'); c7.append(`${money(r.c0)} → ${money(r.c1)} `); if (r.costo != null) c7.append(el('span', r.costo > 0 ? 'neg' : 'pos', `(${r.costo > 0 ? '+' : '−'}${Math.abs(Math.round(r.costo * 100))}%)`));
+const c8 = el('td', 'n', r.freq ? r.freq.toFixed(1) : '—');
+const c9 = el('td', 'n', money(r.inv));
+tr.append(c1, c2, c3, c4, c5, c6, c7, c8, c9); return tr;
+}));
+};
+document.querySelectorAll('th[data-s]').forEach((th) => th.addEventListener('click', () => { const s = th.dataset.s; st.dir = st.sort === s ? -st.dir : 1; st.sort = s; draw(); }));
+$('#q').addEventListener('input', (e) => { st.q = e.target.value.trim(); draw(); });
+draw();
+load().then(() => { data = analyze(); const y = Math.floor(data.last / 100), w = data.last % 100;
+$('#upd').textContent = `Última semana completa: ${w} de ${y} · leído el ${new Date().toLocaleString('es-AR', { dateStyle: 'short', timeStyle: 'short' })}`; draw(); })
+.catch(() => { $('#upd').textContent = ''; $('#upd').className = 'err'; $('#upd').textContent = 'No se pudo leer la planilla. Revisá que siga compartida como "cualquiera con el link puede ver".'; });
+})();
+</script>
+</body>
+</html>
